@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './index-v4.css';
+import emailjs from '@emailjs/browser';
 
 // --- ADATOK ---
 const products = [
@@ -27,6 +28,7 @@ function Nav({ cartCount }: { cartCount: number }) {
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
         <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>FŐOLDAL</Link>
         <Link to="/merch" style={{ color: 'white', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>BOLT</Link>
+                <Link to="/about" style={{ color: 'white', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>ROLÚNK</Link>
         <Link to="/cart" style={{ 
           backgroundColor: '#5bdc00', color: 'black', padding: '0.5rem 1.2rem', 
           borderRadius: '4px', textDecoration: 'none', fontWeight: '800' 
@@ -35,6 +37,37 @@ function Nav({ cartCount }: { cartCount: number }) {
         </Link>
       </div>
     </nav>
+  );
+}
+
+function About() {
+  return (
+    <div style={{ padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto', color: 'white', fontFamily: 'monospace' }}>
+      <h2 style={{ color: '#5bdc00', fontSize: '3rem', fontWeight: '900', marginBottom: '2rem' }}>RÓLUNK</h2>
+      <div style={{ borderLeft: '4px solid #5bdc00', paddingLeft: '1.5rem', marginBottom: '3rem' }}>
+        <p style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>
+          A Romlott Zokni 2025-ben alakult Budapesten. Nem csak zenélünk: mi adjuk a város legbüdösebb punk-injekcióját közvetlenül a hallójárataidba.
+        </p>
+        <p style={{ color: '#888' }}>
+          Minden koncertünket saját magunk rögzítjük, hogy a nyers energia akkor is átjöjjön, ha épp nem az első sorban pogózol. PUNK IS NOT DEAD, JUST SMELLS FUNNY.
+        </p>
+      </div>
+
+      {/* Koncert hangulatkép a szekció alján */}
+      <div style={{
+        width: '100%',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        border: '3px solid #5bdc00',
+        boxShadow: '0 0 25px rgba(91, 220, 0, 0.4)'
+      }}>
+        <img
+          src="/concert.jpg"
+          alt="Romlott Zokni koncert hangulat"
+          style={{ width: '100%', height: 'auto', display: 'block' }}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -155,13 +188,10 @@ function CartPage({ cart, removeFromCart, clearCart }: { cart: any[], removeFrom
 
   const total = cart.reduce((sum, item) => sum + item.price, 0);
 
+  // Inside CartPage component in App.tsx
   const handleOrder = async () => {
     if (!email.includes('@') || address.length < 5) {
       alert("Hé! Érvényes e-mailt és címet adj meg!");
-      return;
-    }
-    if (paymentMethod === 'card') {
-      alert("Hiba: A kártyás fizetés jelenleg nem üzemel!");
       return;
     }
 
@@ -171,11 +201,27 @@ function CartPage({ cart, removeFromCart, clearCart }: { cart: any[], removeFrom
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, address, cart, total, payment: paymentMethod })
       });
+
       const data = await response.json();
+
+      // Trigger EmailJS notification
+      await emailjs.send(
+        'service_63wywa8',
+        'template_d1hqlia',
+        {
+          to_email: email,
+          order_id: data.orderId,
+          total_amount: total,
+          shipping_address: address
+        },
+        '18is6JcjKKDs5aqQY'
+      );
+
       setCompletedOrder(data);
       clearCart();
     } catch (err) {
-      alert("Hiba: A szerver nem válaszol!");
+      console.error("DEBUG ERROR:", err); // This prints the real error to the F12 console
+      alert("Hiba: " + err);
     }
   };
 
@@ -274,6 +320,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/merch" element={<Merch addToCart={addToCart} />} />
+          <Route path="/about" element={<About />}/>
           <Route path="/cart" element={<CartPage cart={cart} removeFromCart={removeFromCart} clearCart={clearCart} />} />
         </Routes>
         <footer style={{ textAlign: 'center', padding: '4rem', color: '#333', borderTop: '1px solid #111', marginTop: '4rem' }}>
