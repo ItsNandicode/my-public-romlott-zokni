@@ -4,11 +4,14 @@ import './index-v4.css';
 
 // --- ADATOK ---
 const products = [
-  { id: 1, name: 'Romlott Zokni Turné Póló', price: 5500, category: 'Ruházat', sizes: ['S', 'M', 'L', 'XL'] },
-  { id: 2, name: 'Büdös a lábam - Dedikált zokni', price: 2500, category: 'Kiegészítők', sizes: ['36-40', '41-45'] },
-  { id: 3, name: 'Punk-Injekció (Zenei CD)', price: 3000, category: 'Zene', sizes: [] },
-  { id: 4, name: 'Szakadt Húr Pengető szett', price: 1200, category: 'Kiegészítők', sizes: [] },
-];
+  { id: 1, name: 'Romlott Zokni Turné Póló', price: 5500, category: 'Ruházat', sizes: ['S', 'M', 'L', 'XL'], image: '/Romlott_zokni_polo.png' },
+    { id: 2, name: 'Büdös a lábam - Dedikált zokni', price: 2500, category: 'Kiegészítők', sizes: ['36-40', '41-45'], image: '/zokni_zokni.png' },
+    { id: 3, name: 'Punk-Injekció (Zenei CD)', price: 3000, category: 'Zene', sizes: [], image: '/CD_Romlott_zokni.png' },
+    { id: 4, name: 'Bakelit Lemez (Vinyl)', price: 9500, category: 'Zene', sizes: [], image: '/vINyl_Romlott_zokni.png' },
+    { id: 5, name: 'Punk-Injekció CD Borító', price: 1500, category: 'Dekor', sizes: [], image: '/album_cover.png' },
+    { id: 6, name: 'Szétvert Stratocaster (Broken Guitar)', price: 45000, category: 'Hangszer', sizes: [], image: '/Guitar_romlott_zokni.png' },
+    { id: 7, name: 'Húr Pengető (3Db)', price: 1200, category: 'Kiegészítők', sizes: [], image: '/Gitar_pengeto_pick.png' },
+  ];
 
 // --- NAVIGÁCIÓ ---
 function Nav({ cartCount }: { cartCount: number }) {
@@ -76,18 +79,65 @@ function Merch({ addToCart }: { addToCart: (p: any, s: string) => void }) {
         {products.map(product => {
           const [size, setSize] = useState(product.sizes[0] || 'N/A');
           return (
-            <div key={product.id} style={{ backgroundColor: '#111', border: '1px solid #222', padding: '1.5rem', borderRadius: '8px' }}>
-              <div style={{ height: '200px', backgroundColor: '#222', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>
-                {product.category === 'Ruházat' ? '👕' : '🎸'}
+            <div key={product.id} style={{ backgroundColor: '#111', border: '1px solid #222', padding: '1.5rem', borderRadius: '8px', display: 'flex', flexDirection: 'column' }}>
+              {/* Image Container replaced Emojis */}
+              <div style={{
+                height: '250px',
+                backgroundColor: '#0a0a0a',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                borderRadius: '4px',
+                border: '1px solid #333'
+              }}>
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    padding: '10px'
+                  }}
+                  // Fallback if image is missing
+                  onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300?text=KÉP+HAMAROSAN'; }}
+                />
               </div>
-              <h3 style={{ color: 'white' }}>{product.name}</h3>
-              <p style={{ color: '#5bdc00', fontSize: '1.5rem', fontWeight: 'bold' }}>{product.price} Ft</p>
-              {product.sizes.length > 0 && (
-                <select value={size} onChange={(e) => setSize(e.target.value)} style={{ width: '100%', padding: '0.5rem', background: '#222', color: 'white', marginBottom: '1rem', border: '1px solid #333' }}>
-                  {product.sizes.map(s => <option key={s} value={s}>{s}</option>)}
-                </select>
-              )}
-              <button onClick={() => { addToCart(product, size); alert("Kosárba dobva!"); }} style={{ width: '100%', padding: '1rem', backgroundColor: '#5bdc00', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>KOSÁRBA</button>
+
+              <h3 style={{ color: 'white', fontSize: '1.2rem', minHeight: '3rem' }}>{product.name}</h3>
+              <p style={{ color: '#5bdc00', fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>{product.price} Ft</p>
+
+              <div style={{ marginTop: 'auto' }}>
+                {product.sizes.length > 0 && (
+                  <select
+                    value={size}
+                    onChange={(e) => setSize(e.target.value)}
+                    style={{ width: '100%', padding: '0.7rem', background: '#222', color: 'white', marginBottom: '1rem', border: '1px solid #333', borderRadius: '4px' }}
+                  >
+                    {product.sizes.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                )}
+                <button
+                  onClick={() => { addToCart(product, size); alert("Kosárba dobva!"); }}
+                  style={{
+                    width: '100%',
+                    padding: '1rem',
+                    backgroundColor: '#5bdc00',
+                    color: 'black',
+                    border: 'none',
+                    fontWeight: '900',
+                    cursor: 'pointer',
+                    borderRadius: '4px',
+                    transition: '0.2s'
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#4aba00')}
+                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#5bdc00')}
+                >
+                  KOSÁRBA
+                </button>
+              </div>
             </div>
           );
         })}
