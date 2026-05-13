@@ -219,9 +219,10 @@ function CartPage({ cart, removeFromCart, clearCart }: { cart: any[], removeFrom
 
       setCompletedOrder(data);
       clearCart();
-    } catch (err) {
-      console.error("DEBUG ERROR:", err); // This prints the real error to the F12 console
-      alert("Hiba: " + err);
+    } catch (err: any) {
+      console.error("DEBUG ERROR:", err);
+      // This will show the actual message if it exists, otherwise the string version of the object
+      alert("Hiba: " + (err.text || err.message || JSON.stringify(err)));
     }
   };
 
