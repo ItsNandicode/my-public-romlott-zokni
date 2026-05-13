@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './index-v4.css';
 
-// --- STATIKUS ADATOK ---
+// --- ADATOK ---
 const products = [
   { id: 1, name: 'Romlott Zokni Turné Póló', price: 5500, category: 'Ruházat', sizes: ['S', 'M', 'L', 'XL'] },
   { id: 2, name: 'Büdös a lábam - Dedikált zokni', price: 2500, category: 'Kiegészítők', sizes: ['36-40', '41-45'] },
@@ -10,26 +10,24 @@ const products = [
   { id: 4, name: 'Szakadt Húr Pengető szett', price: 1200, category: 'Kiegészítők', sizes: [] },
 ];
 
+// --- NAVIGÁCIÓ ---
 function Nav({ cartCount }: { cartCount: number }) {
   return (
     <nav style={{ 
-      backgroundColor: '#0a0a0a', 
-      padding: '1rem 2rem', 
-      display: 'flex', 
-      justifyContent: 'space-between', 
-      alignItems: 'center', 
-      position: 'sticky', 
-      top: 0, 
-      zIndex: 100, 
-      borderBottom: '2px solid #5bdc00' // A navigáció alja is kapott egy csíkot
+      backgroundColor: '#0a0a0a', padding: '1rem 2rem', display: 'flex', 
+      justifyContent: 'space-between', alignItems: 'center', position: 'sticky', 
+      top: 0, zIndex: 100, borderBottom: '2px solid #5bdc00' 
     }}>
       <Link to="/" style={{ color: '#5bdc00', fontSize: '1.8rem', fontWeight: '900', textDecoration: 'none' }}>
         ROMLOTT ZOKNI
       </Link>
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
         <Link to="/" style={{ color: 'white', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>FŐOLDAL</Link>
-        <Link to="/merch" style={{ color: 'white', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>MERCH</Link>
-        <Link to="/merch" style={{ backgroundColor: '#5bdc00', color: 'black', padding: '0.5rem 1.2rem', borderRadius: '4px', textDecoration: 'none', fontWeight: '800' }}>
+        <Link to="/merch" style={{ color: 'white', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 'bold' }}>BOLT</Link>
+        <Link to="/cart" style={{ 
+          backgroundColor: '#5bdc00', color: 'black', padding: '0.5rem 1.2rem', 
+          borderRadius: '4px', textDecoration: 'none', fontWeight: '800' 
+        }}>
           🛒 KOSÁR ({cartCount})
         </Link>
       </div>
@@ -37,126 +35,186 @@ function Nav({ cartCount }: { cartCount: number }) {
   );
 }
 
+// --- FŐOLDAL ---
 function Home() {
   const [dates, setDates] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
-    fetch('http://localhost:5000/api/tour-dates')
-      .then(res => res.json())
-      .then(data => { setDates(data); setLoading(false); })
-      .catch(() => setLoading(false));
+    fetch('http://localhost:5000/api/tour-dates').then(res => res.json()).then(setDates).catch(() => {});
   }, []);
 
   return (
     <div style={{ color: 'white' }}>
-      <header style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        minHeight: '85vh', 
-        textAlign: 'center',
-        background: 'linear-gradient(180deg, #1a1a1a 0%, #000000 100%)'
-      }}>
-        <img 
-          src="/logo.svg" 
-          alt="Romlott Zokni Logo" 
-          style={{ 
-            width: '90%',
-            maxWidth: '650px',
-            filter: 'drop-shadow(0 0 15px rgba(91, 220, 0, 0.6))', // Pontos zöld ragyogás
-            marginBottom: '2rem'
-          }} 
-        />
-        <h1 style={{ fontSize: '1.2rem', letterSpacing: '6px', color: '#5bdc00', fontWeight: '300' }}>
-          PUNK IS NOT DEAD, JUST SMELLS FUNNY
-        </h1>
+      <header style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center', background: 'linear-gradient(180deg, #1a1a1a 0%, #000000 100%)' }}>
+        <img src="/logo.svg" alt="Logo" style={{ width: '90%', maxWidth: '500px', filter: 'drop-shadow(0 0 15px rgba(91, 220, 0, 0.6))', marginBottom: '2rem' }} />
+        <h1 style={{ fontSize: '1.2rem', letterSpacing: '6px', color: '#5bdc00' }}>PUNK IS NOT DEAD, JUST SMELLS FUNNY</h1>
       </header>
-
       <main style={{ maxWidth: '1000px', margin: '0 auto', padding: '4rem 2rem' }}>
-        <section id="bio" style={{ marginBottom: '6rem', backgroundColor: '#111', padding: '3rem', borderRadius: '15px', border: '1px solid #222' }}>
-  <h2 style={{ fontSize: '2.5rem', color: '#5bdc00', marginBottom: '1.5rem', textTransform: 'uppercase' }}>A SZTORI</h2>
-  <p style={{ lineHeight: '1.9', fontSize: '1.15rem', color: '#ddd' }}>
-    A ROMLOTT ZOKNI története nem egy sikersztori, hanem egy statisztikai hiba. 2024-ben, egy átbulizott éjszaka után Lyukas Laci (ének/basszus) rájött, hogy a mérnöki precizitás és a punk káosz nem zárják ki egymást. 
-    <br /><br />
-    A zenekar alapításának pillanata az volt, amikor Szakadt Szandi (gitár) véletlenül rálépett egy effektpedálra, és az a hang, ami kijött a hangfalból, jobban fájt, mint egy elrontott adatbázis-migráció. Ehhez csatlakozott Büdös Berci (dobok), aki korábban csak kávégépeken dobolt a vizsgaidőszakban, de nálunk végre igazi bőröket püfölhet. 
-    <br /><br />
-    Nem vagyunk virtuózok, nem ismerjük a kottát, és a hangszerünk is gyakran elhangolódik a koncert felénél, de egyvalamit garantálunk: a hangerőt. A zenénk olyan, mint a kedvenc zoknid: lehet, hogy szakadt, lehet, hogy büdös, de elválaszthatatlan vagy tőle. Mi vagyunk a budapesti underground digitális lázadói!
-  </p>
-</section>
-
-        <section>
-          <h2 style={{ color: '#5bdc00', fontSize: '2rem', marginBottom: '2rem' }}>TURNÉ 2026</h2>
-          {loading ? <p>Töltés...</p> : (
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <tbody>
-                {dates.map(t => (
-                  <tr key={t.id} style={{ borderBottom: '1px solid #222' }}>
-                    <td style={{ padding: '1.5rem 0', color: '#888' }}>{t.date}</td>
-                    <td style={{ fontWeight: 'bold' }}>{t.city.toUpperCase()}</td>
-                    <td>{t.venue}</td>
-                    <td style={{ textAlign: 'right' }}>
-                      <a href={t.ticketUrl} target="_blank" rel="noreferrer" style={{ color: '#5bdc00', fontWeight: 'bold', textDecoration: 'none', border: '1px solid #5bdc00', padding: '0.4rem 1rem' }}>JEGYEK</a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </section>
+        <h2 style={{ color: '#5bdc00', fontSize: '2rem', marginBottom: '2rem' }}>TURNÉ 2026</h2>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <tbody>
+            {dates.map(t => (
+              <tr key={t.id} style={{ borderBottom: '1px solid #222' }}>
+                <td style={{ padding: '1.5rem 0', color: '#888' }}>{t.date}</td>
+                <td style={{ fontWeight: 'bold' }}>{t.city.toUpperCase()}</td>
+                <td>{t.venue}</td>
+                <td style={{ textAlign: 'right' }}><a href={t.ticketUrl} target="_blank" rel="noreferrer" style={{ color: '#5bdc00', textDecoration: 'none', border: '1px solid #5bdc00', padding: '0.4rem 1rem' }}>JEGYEK</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </main>
     </div>
   );
 }
 
-function Merch({ cart, addToCart, clearCart }: { cart: any[], addToCart: (p: any, s: string) => void, clearCart: () => void }) {
-  const [email, setEmail] = useState('');
-  const handleOrder = async () => {
-    const response = await fetch('http://localhost:5000/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, cart })
-    });
-    if (response.ok) { alert("SIKERES RENDELÉS!"); clearCart(); }
-  };
-
+// --- BOLT ---
+function Merch({ addToCart }: { addToCart: (p: any, s: string) => void }) {
   return (
     <div style={{ padding: '4rem 2rem', maxWidth: '1200px', margin: '0 auto' }}>
-      <h2 style={{ fontSize: '3rem', textAlign: 'center', marginBottom: '4rem', color: '#5bdc00' }}>MERCH STORE</h2>
+      <h2 style={{ fontSize: '3rem', textAlign: 'center', marginBottom: '4rem', color: '#5bdc00', fontWeight: '900' }}>MERCH STORE</h2>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
         {products.map(product => {
           const [size, setSize] = useState(product.sizes[0] || 'N/A');
           return (
             <div key={product.id} style={{ backgroundColor: '#111', border: '1px solid #222', padding: '1.5rem', borderRadius: '8px' }}>
-              <div style={{ height: '200px', backgroundColor: '#222', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>🎸</div>
+              <div style={{ height: '200px', backgroundColor: '#222', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>
+                {product.category === 'Ruházat' ? '👕' : '🎸'}
+              </div>
               <h3 style={{ color: 'white' }}>{product.name}</h3>
               <p style={{ color: '#5bdc00', fontSize: '1.5rem', fontWeight: 'bold' }}>{product.price} Ft</p>
               {product.sizes.length > 0 && (
-                <select value={size} onChange={(e) => setSize(e.target.value)} style={{ width: '100%', padding: '0.5rem', background: '#222', color: 'white', marginBottom: '1rem' }}>
+                <select value={size} onChange={(e) => setSize(e.target.value)} style={{ width: '100%', padding: '0.5rem', background: '#222', color: 'white', marginBottom: '1rem', border: '1px solid #333' }}>
                   {product.sizes.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               )}
-              <button onClick={() => addToCart(product, size)} style={{ width: '100%', padding: '1rem', backgroundColor: '#5bdc00', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>KOSÁRBA</button>
+              <button onClick={() => { addToCart(product, size); alert("Kosárba dobva!"); }} style={{ width: '100%', padding: '1rem', backgroundColor: '#5bdc00', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>KOSÁRBA</button>
             </div>
           );
         })}
       </div>
+    </div>
+  );
+}
 
-      {cart.length > 0 && (
-        <div style={{ marginTop: '5rem', padding: '3rem', border: '2px solid #5bdc00', borderRadius: '8px' }}>
-          <h2 style={{ color: '#5bdc00' }}>GUEST CHECKOUT</h2>
-          <input type="email" placeholder="email@pelda.hu" value={email} onChange={(e) => setEmail(e.target.value)} style={{ padding: '1rem', width: '300px', marginRight: '1rem' }} />
-          <button onClick={handleOrder} style={{ padding: '1rem 2rem', backgroundColor: '#5bdc00', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>RENDELÉS LEADÁSA</button>
+// --- KOSÁR ÉS CHECKOUT ---
+function CartPage({ cart, removeFromCart, clearCart }: { cart: any[], removeFromCart: (index: number) => void, clearCart: () => void }) {
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('cash'); // 'cash' vagy 'card'
+  const [completedOrder, setCompletedOrder] = useState<any>(null);
+
+  const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+  const handleOrder = async () => {
+    if (!email.includes('@') || address.length < 5) {
+      alert("Hé! Érvényes e-mailt és címet adj meg!");
+      return;
+    }
+    if (paymentMethod === 'card') {
+      alert("Hiba: A kártyás fizetés jelenleg nem üzemel!");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, address, cart, total, payment: paymentMethod })
+      });
+      const data = await response.json();
+      setCompletedOrder(data);
+      clearCart();
+    } catch (err) {
+      alert("Hiba: A szerver nem válaszol!");
+    }
+  };
+
+  if (completedOrder) {
+    return (
+      <div style={{ padding: '4rem 2rem', maxWidth: '600px', margin: '0 auto', color: '#5bdc00', textAlign: 'center' }}>
+        <div style={{ border: '2px solid #5bdc00', padding: '3rem', backgroundColor: '#111' }}>
+          <h2 style={{ fontSize: '2rem' }}>🤘 RENDELÉS LEADVA!</h2>
+          <p style={{ color: 'white', marginTop: '1rem' }}>Rendelésszám: <span style={{color: '#5bdc00'}}>{completedOrder.orderId}</span></p>
+          <p style={{ color: 'white' }}>Szállítási cím: {address}</p>
+          <p style={{ color: '#888', marginTop: '1rem' }}>Várd a futárt, vigyél neki vizet!</p>
+          <Link to="/" style={{ color: '#5bdc00', display: 'inline-block', marginTop: '2rem', fontWeight: 'bold' }}>VISSZA A FŐOLDALRA</Link>
         </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ padding: '4rem 2rem', maxWidth: '800px', margin: '0 auto', color: 'white' }}>
+      <h2 style={{ color: '#5bdc00', fontSize: '2rem', marginBottom: '2rem', fontWeight: '900' }}>KOSARAD TARTALMA</h2>
+      
+      {cart.length === 0 ? (
+        <p>A kosarad olyan üres, mint egy basszeros feje. <Link to="/merch" style={{ color: '#5bdc00' }}>Irány vásárolni!</Link></p>
+      ) : (
+        <>
+          <div style={{ backgroundColor: '#111', padding: '1rem', borderRadius: '8px' }}>
+            {cart.map((item, idx) => (
+              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: '1px solid #222', alignItems: 'center' }}>
+                <div>
+                  <span style={{ fontWeight: 'bold' }}>{item.name}</span> ({item.selectedSize})
+                  <div style={{ color: '#5bdc00' }}>{item.price} Ft</div>
+                </div>
+                <button onClick={() => removeFromCart(idx)} style={{ background: 'none', color: '#ff4444', border: '1px solid #ff4444', padding: '0.3rem 0.6rem', cursor: 'pointer', borderRadius: '4px' }}>TÖRLÉS</button>
+              </div>
+            ))}
+            <div style={{ fontSize: '1.5rem', textAlign: 'right', marginTop: '2rem', color: '#5bdc00', fontWeight: 'bold' }}>ÖSSZESEN: {total} Ft</div>
+          </div>
+
+          <div style={{ marginTop: '4rem', padding: '2.5rem', backgroundColor: '#111', borderRadius: '12px', border: '2px solid #5bdc00' }}>
+            <h3 style={{ color: '#5bdc00', marginBottom: '1.5rem', fontSize: '1.5rem' }}>GUEST CHECKOUT</h3>
+            
+            <label style={{display: 'block', marginBottom: '0.5rem', color: '#888'}}>E-mail:</label>
+            <input type="email" placeholder="email@pelda.hu" value={email} onChange={e => setEmail(e.target.value)} style={{ width: '100%', padding: '1rem', marginBottom: '1.5rem', background: '#222', color: 'white', border: '1px solid #333', borderRadius: '4px' }} />
+            
+            <label style={{display: 'block', marginBottom: '0.5rem', color: '#888'}}>Szállítási cím:</label>
+            <input type="text" placeholder="1234 Város, Utca házszám" value={address} onChange={e => setAddress(e.target.value)} style={{ width: '100%', padding: '1rem', marginBottom: '2rem', background: '#222', color: 'white', border: '1px solid #333', borderRadius: '4px' }} />
+
+            <h4 style={{ color: '#5bdc00', marginBottom: '1rem' }}>Fizetési mód:</h4>
+            <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <input type="radio" name="pay" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} />
+                Utánvét (Készpénz a futárnak)
+              </label>
+              <label style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <input type="radio" name="pay" value="card" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} />
+                Bankkártya (Előre fizetés)
+              </label>
+              
+              {/* KÁRTYÁS HIBAÜZENET */}
+              {paymentMethod === 'card' && (
+                <div style={{ backgroundColor: 'rgba(255,0,0,0.1)', color: '#ff4444', padding: '1rem', border: '1px solid #ff4444', borderRadius: '4px', fontSize: '0.9rem' }}>
+                  ⚠️ Sajnáljuk, a bankkártyás fizetés technikai okok miatt jelenleg nem elérhető! Kérjük, válaszd az utánvétet.
+                </div>
+              )}
+            </div>
+
+            <button 
+              onClick={handleOrder} 
+              disabled={paymentMethod === 'card'}
+              style={{ 
+                width: '100%', padding: '1.2rem', backgroundColor: paymentMethod === 'card' ? '#333' : '#5bdc00', 
+                color: 'black', fontWeight: '900', border: 'none', cursor: paymentMethod === 'card' ? 'not-allowed' : 'pointer', 
+                borderRadius: '4px', fontSize: '1.1rem' 
+              }}
+            >
+              RENDELÉS LEADÁSA
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
 }
 
-export function App() {
+// --- FŐ APP ---
+export default function App() {
   const [cart, setCart] = useState<any[]>([]);
   const addToCart = (product: any, size: string) => setCart(prev => [...prev, { ...product, selectedSize: size }]);
+  const removeFromCart = (index: number) => setCart(prev => prev.filter((_, i) => i !== index));
   const clearCart = () => setCart([]);
 
   return (
@@ -165,12 +223,13 @@ export function App() {
         <Nav cartCount={cart.length} />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/merch" element={<Merch cart={cart} addToCart={addToCart} clearCart={clearCart} />} />
+          <Route path="/merch" element={<Merch addToCart={addToCart} />} />
+          <Route path="/cart" element={<CartPage cart={cart} removeFromCart={removeFromCart} clearCart={clearCart} />} />
         </Routes>
-        <footer style={{ textAlign: 'center', padding: '4rem', color: '#333' }}>© 2026 ROMLOTT ZOKNI</footer>
+        <footer style={{ textAlign: 'center', padding: '4rem', color: '#333', borderTop: '1px solid #111', marginTop: '4rem' }}>
+          © 2026 ROMLOTT ZOKNI ZENETÁR | Mérnökinformatikus Projekt
+        </footer>
       </div>
     </Router>
   );
 }
-
-export default App;
