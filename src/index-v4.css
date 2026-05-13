@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dominant: #fbf7f4;
+  --color-secondary: #84832f;
+  --color-accent: #38521d;
+  --color-text-on-dominant: #84832f;
+  --color-text-on-secondary: #ffffff;
+  --color-text-on-accent: #ffffff;
+}
+
+/* Base Styles */
+body {
+  background-color: var(--color-dominant);
+  color: var(--color-text-on-dominant);
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Card Styles used in App.tsx */
+.card {
+  background-color: var(--color-dominant);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
