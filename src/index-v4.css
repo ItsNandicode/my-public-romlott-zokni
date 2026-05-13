@@ -1,12 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-dominant: #fbf7f4;
+  --color-dominant: #000000;
   --color-secondary: #84832f;
-  --color-accent: #38521d;
+  --color-accent: #5bdc00;
   --color-text-on-dominant: #84832f;
   --color-text-on-secondary: #ffffff;
   --color-text-on-accent: #ffffff;
+  --text-on-accent: #000000;
 }
 
 /* Base Styles */
